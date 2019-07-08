@@ -7,11 +7,13 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.get('/Encryption', (req, res, next) => {
+app.post('/Encryption', (req, res, next) => {
 
 var EncryptArr=[];
-var str=JSON.stringify(req.body, null, 2);
+var str=JSON.stringify(req.body.userdata, null, 2);
 
+console.log('req.body',req.body);
+console.log(str);
 
 var input     = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   var output    = 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm';
@@ -28,14 +30,14 @@ var input     = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
 
 
-app.get('/Decryption', (req, res, next) => {
+app.post('/Decryption', (req, res, next) => {
 
   var EncryptArr=[];
-  var str=JSON.stringify(req.body, null, 2);
+  var str=JSON.stringify(req.body.userdata, null, 2);
   
   
-  var input     = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    var output    = 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm';
+  var output     = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    var input    = 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm';
     var index     = x => input.indexOf(x);
     var translate = x => index(x) > -1 ? output[index(x)] : x;
     var retStr= str.split('').map(translate).join('');
@@ -44,7 +46,7 @@ app.get('/Decryption', (req, res, next) => {
   
   
   
-    res.send(retStr);
+    res.send('Here is Decrypt Text:'+ retStr);
   });
     
 
