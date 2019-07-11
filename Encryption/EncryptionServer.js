@@ -11,106 +11,64 @@ client.on('error', (err) => {
   console.log("Error " + err);
 });
 
-
-
-
-
 const app = express();
-
 app.use(bodyParser.json());
 
- app.post('/Encryption', async (req, res, next) => {
-
+app.post('/Encryption', async (req, res, next) => {
   var EncryptArr = [];
-  var str =JSON.stringify(req.body.userdata, null, 2);
-  // console.log('req.body.userdata',req.body.userdata);
-  // console.log('str',str);
-  var result=await CachEncryption(str);
-
-
-  console.log('Here is encrypt Text:' + result);
-
+  var str = JSON.stringify(req.body.userdata, null, 2);
+  var result = await CachEncryption(str);
   await res.send('Here is Encrpted Text:' + result);
 });
 
 
 
-
-
-
-
-
-
-
 app.post('/Decryption', (req, res, next) => {
-
   var EncryptArr = [];
   var str = JSON.stringify(req.body.userdata, null, 2);
-
-  var output = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  var input = 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm';
-  var index = x => input.indexOf(x);
-  var translate = x => index(x) > -1 ? output[index(x)] : x;
-  var retStr = str.split('').map(translate).join('');
-
-
-
-
+  var retStr = Encryption(str);
   res.send('Here is Decrypt Text:' + retStr);
 });
 
 
 
-app.post('/CachEncryption', (req,res,next)=>{
-  const org = req.body.userdata;
-  console.log('org',org);
+app.post('/CachEncryption', (req, res, next) => {  
+    const userdata = req.body.userdata; 
 
-// Print redis errors to the console
-client.on('error', (err) => {
-  console.log("Error " + err);
-});
+  // Print redis errors to the console
+  client.on('error', (err) => {
+    console.log("Error " + err);
+  });
 
-console.log('Quering cach Repo',org);
-  client.get(`afinitiWiki:${org}`, function (err, data) {
-    console.log('check Cach',data);
-    
-      if (err) throw err;
+  console.log('Quering cach Repo', userdata);
+  client.get(`afinitiWiki:${userdata}`, function (err, data) {
+    console.log('check Cach', data);
 
-      if (data != null) {
-        console.log('data',data);
-          res.send(data);
-      } else {
-     //console.log('data',data);
-     next();
-    // console.log('data',data);
-    
-    // console.log('data',data);
-    
-}   
+    if (err) throw err;
+
+    if (data != null) {
+      console.log('data', data);
+      res.send(data);
+    } else {
+      next();
+     
+    }
 
 
-});
+  });
 
-}, (req,res)=>{
+}, (req, res) => {
 
   console.log('Here in Next');
-  var str=req.body.userdata;
-  var input = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  var output = 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm';
-  var index = x => input.indexOf(x);
-  var translate = x => index(x) > -1 ? output[index(x)] : x;
-  var retStr = str.split('').map(translate).join('');
-  console.log('Here is retStr',retStr);
-
-
+  var str = req.body.userdata;
+  var retStr = Encryption(str);
   client.setex(`afinitiWiki:${str}`, 3600, retStr);
-  
   res.send(retStr);
 
 });
 
 
-  
+
 
 
 
@@ -134,7 +92,7 @@ app.listen(3000);
 
 
 function Encryption(str) {
-  console.log('str',str);
+  //console.log('str', str);
   var input = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   var output = 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm';
   var index = x => input.indexOf(x);
@@ -145,7 +103,7 @@ function Encryption(str) {
 
 async function CachEncryption(str) {
   // create and connect redis client to local instance.
-  const client =await redis.createClient();
+  const client = await redis.createClient();
   const query = str;
   var result = "";
 
@@ -155,15 +113,15 @@ async function CachEncryption(str) {
   });
 
 
-console.log('Quering in cach',query);
-  var output=await  client.get(`afinitiWiki:${query}`,async (err, result) => {
+  console.log('Quering in cach', query);
+  var output = await client.get(`afinitiWiki:${query}`, async (err, result) => {
     // If that key exist in Redis store
     if (result) {
-     
+
       console.log('Found in Cach', result);
-       return result;
-    } else { 
-      
+      return result;
+    } else {
+
       // Key does not exist in Redis store
       // Fetch directly from Wikipedia API
       console.log('else block');
@@ -175,8 +133,8 @@ console.log('Quering in cach',query);
       console.log('result', result);
       return result;
     }
-    
+
   });
-console.log('output',output);
+  console.log('output', output);
 
 }
