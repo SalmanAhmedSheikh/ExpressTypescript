@@ -80,16 +80,24 @@ export class App {
 
 
 
+
+
     Encryption(str: string) { // LBH QVQ VG!
+        console.log('Call Encryption');
         var convertedString: string = "";
         var strLoc;
         for (var i = 0; i < str.length; i++) {
             strLoc = str.charCodeAt(i);
-            if (strLoc >= 65 && strLoc < 78) {
+            if ((strLoc >= 65 && strLoc < 78) || (strLoc >= 97 && strLoc < 110)) {
                 convertedString = convertedString + String.fromCharCode(strLoc + 13);
-            } else if (strLoc >= 78 && strLoc < 91) {
+            } else if ((strLoc >= 78 && strLoc < 91) || (strLoc >= 110 && strLoc < 123)) {
                 convertedString = convertedString + String.fromCharCode(strLoc - 13);
-            } else {
+
+
+            }
+
+
+            else {
                 convertedString = convertedString + String.fromCharCode(strLoc);
             }
         }
