@@ -88,9 +88,9 @@ export class App {
         var strLoc;
         for (var i = 0; i < str.length; i++) {
             strLoc = str.charCodeAt(i);
-            if ((strLoc >= 65 && strLoc < 78) || (strLoc >= 97 && strLoc < 110)) {
+            if ((strLoc >= 'A'.charCodeAt(0) && strLoc < 'N'.charCodeAt(0)) || (strLoc >= 'a'.charCodeAt(0) && strLoc < 'n'.charCodeAt(0))) {
                 convertedString = convertedString + String.fromCharCode(strLoc + 13);
-            } else if ((strLoc >= 78 && strLoc < 91) || (strLoc >= 110 && strLoc < 123)) {
+            } else if ((strLoc >= 'N'.charCodeAt(0) && strLoc <= 'Z'.charCodeAt(0)) || (strLoc >= 'n'.charCodeAt(0) && strLoc <= 'z'.charCodeAt(0))) {
                 convertedString = convertedString + String.fromCharCode(strLoc - 13);
 
 
